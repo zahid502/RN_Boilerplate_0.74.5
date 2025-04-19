@@ -1,0 +1,31 @@
+export const colors = {
+  //primary-------------------------------------------
+  primary: '#0c4c27',
+  primaryLight: '#12813E',
+  primaryLighter: '#16A24D',
+  primaryDark: '#0A3A1E',
+  primaryDarker: '#072A15',
+  middlePrimary: '#0F5F30',
+  primaryTransparent: 'rgba(13, 76, 40, 0.25)',
+
+  //commaon-------------------------------------------
+  white: '#ffffff',
+  offWhite: '#f8f8ff',
+  secondary: '#FAFAFA',
+  transparent: '#00000099',
+  black: '#000000',
+  metallicBlack: '#333333',
+  lightestGray: '#DFDFDF',
+  gray: '#696969',
+  lightGray: '#979CA5',
+  darkGray: '#464646',
+  green: '#006203',
+  redDark: '#880808',
+  red: '#DB2121',
+  transparentRed: 'rgba(219, 33, 33, 0.05)',
+  pink: '#ED1878',
+  background: '#F7F7F7',
+  lightBorder: '#C9C9C9',
+  darkBoder: '#767676',
+  success: '#27b743',
+};

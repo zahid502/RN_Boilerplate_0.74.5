@@ -2,6 +2,15 @@ apply plugin: "com.android.application"
 apply plugin: "org.jetbrains.kotlin.android"
 apply plugin: "com.facebook.react"
 
+// react-native-config configuration ................
+project.ext.envConfigFiles = [
+        developmentdebug: ".env.development",
+        developmentrelease: ".env.development",
+        productiondebug: ".env.production",
+        productionrelease: ".env.production",
+]
+// react-native-config configuration ................
+
 /**
  * This is the configuration block to customize your React Native Android app.
  * By default you don't need to apply any configuration, just uncomment the lines you need.
@@ -72,18 +81,31 @@ def enableProguardInReleaseBuilds = false
  */
 def jscFlavor = 'org.webkit:android-jsc:+'
 
+// react-native-config configuration ................
+def appConfig = [
+        versionCode: 10000,
+        versionName: "1.0.0",
+]
+// react-native-config configuration ................
+
 android {
     ndkVersion rootProject.ext.ndkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
-
     namespace "com.megastore"
+    // react-native-config configuration ................
+    flavorDimensions "environment"
+    // react-native-config configuration ................
+    
     defaultConfig {
         applicationId "com.megastore"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
+        versionCode 10000
+        versionName "1.0.0"
+        // react-native-config configuration ................
+        resValue "string", "build_config_package", "com.megastore"
+        // react-native-config configuration ................
     }
     signingConfigs {
         debug {
@@ -92,19 +114,50 @@ android {
             keyAlias 'androiddebugkey'
             keyPassword 'android'
         }
+        release {
+            if (project.hasProperty('MYAPP_UPLOAD_STORE_FILE')) {
+                storeFile file(MYAPP_UPLOAD_STORE_FILE)
+                storePassword MYAPP_UPLOAD_STORE_PASSWORD
+                keyAlias MYAPP_UPLOAD_KEY_ALIAS
+                keyPassword MYAPP_UPLOAD_KEY_PASSWORD
+            }
+        }
     }
     buildTypes {
         debug {
             signingConfig signingConfigs.debug
+            // react-native-config configuration ................
+            matchingFallbacks = ["debug", "release"]
+            // react-native-config configuration ................
         }
         release {
             // Caution! In production, you need to generate your own keystore file.
             // see https://reactnative.dev/docs/signed-apk-android.
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
             minifyEnabled enableProguardInReleaseBuilds
+            // react-native-config configuration ................
+            matchingFallbacks = ["debug", "release"]
+            // react-native-config configuration ................
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
     }
+
+    // react-native-config configuration ................
+    productFlavors {
+        development {
+            dimension "environment"
+        }
+        production {
+            dimension "environment"
+        }
+    }
+
+    applicationVariants.all { variant ->
+        variant.outputs.all {
+            outputFileName = "MegaStore-V${appConfig.versionName}.${appConfig.versionCode}-${variant.name.capitalize()}.apk"
+        }
+    }
+    // react-native-config configuration ................
 }
 
 dependencies {
@@ -117,3 +170,8 @@ dependencies {
         implementation jscFlavor
     }
 }
+
+// react-native-config configuration ................
+apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
+// react-native-config configuration ................
+apply from: file("../../node_modules/react-native-vector-icons/fonts.gradle")
